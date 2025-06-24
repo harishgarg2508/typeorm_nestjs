@@ -15,7 +15,11 @@ export class UserRepository extends Repository<User> {
     }
 
     async findAll(): Promise<User[]> {
-        return this.find();
+        return this.find({
+             relations:{
+                    posts:true
+                },
+        });
     }
 
     async updateUser(userData: Partial<userType>, id: number): Promise<User> {

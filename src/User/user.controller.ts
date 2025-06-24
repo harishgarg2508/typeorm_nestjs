@@ -8,7 +8,7 @@ export class UserController{
 
     @Post()
     async createUser(@Body() userDTO:UserDTO){
-        return await this.userService.createUser(userDTO)
+        return await this.userService.createUser(userDTO);
     }
     @Get()
     async findAll(){

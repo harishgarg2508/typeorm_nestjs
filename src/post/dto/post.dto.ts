@@ -1,17 +1,18 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-export class UserDTO{
+export class PostDTO{
+   
+
     @IsString()
     @IsNotEmpty()
-    name:string;
+    title:string;
 
-    @IsNotEmpty()
-    @IsNumber()
-    age:number;
-
-    @IsNotEmpty()
     @IsString()
-    email:string;
+    @IsNotEmpty()
+    content:string;
 
-
+    @IsString()
+    @IsNotEmpty()
+    author:string;
+    
 }

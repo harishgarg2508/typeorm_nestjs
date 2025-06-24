@@ -1,25 +1,20 @@
-import {Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { postEntity } from "../post/post";
 
 @Entity('users')
-export class User{
+export class User {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
     @Column()
-    name:string;
+    name: string;
 
     @Column()
-    phone:number;
+    age: number;
 
     @Column()
-    age:number
+    email: string;
 
-     @Column()
-    test:number;
-     @Column()
-    test3:number;
-
-    @Column()
-    email:string
-
+    @OneToMany(() => postEntity, post => post.user)
+    posts: postEntity[];
 }

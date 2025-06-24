@@ -5,11 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user/User';
 import { UserModule } from './User/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PostModule } from './post/post.module';
+import { postEntity } from './entities/post/post';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
     UserModule,
+    PostModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -21,14 +24,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
         logging:true,
-        migrationsTableName:'typeorm_migrations',
-        migrationsRun:false,
-        entities: [User],
+        migrationsTableName: 'typeorm_migrations',
+        migrationsRun: false,
+        entities: [User,postEntity],
       }),
     }),
-    TypeOrmModule.forFeature([User]),
   ],
   controllers: [AppController],
   providers: [AppService],
