@@ -7,12 +7,21 @@ import { UserModule } from './User/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostModule } from './post/post.module';
 import { postEntity } from './entities/post/post';
+import { CommentsModule } from './comments/comments.module';
+import { LikesModule } from './likes/likes.module';
+import { MediaModule } from './media/media.module';
+import { MediaEntity } from './entities/media/media.entity';
+import { CommentEntity } from './entities/comments/comments.entity';
+import { LikeEntity } from './entities/likes/likes.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), 
     UserModule,
     PostModule,
+    MediaModule,
+    CommentsModule,
+    LikesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -28,9 +37,12 @@ import { postEntity } from './entities/post/post';
         logging:true,
         migrationsTableName: 'typeorm_migrations',
         migrationsRun: false,
-        entities: [User,postEntity],
+        entities: [User,postEntity,MediaEntity,CommentEntity,LikeEntity],
       }),
     }),
+    CommentsModule,
+    LikesModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

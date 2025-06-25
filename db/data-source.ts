@@ -2,6 +2,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { User } from 'src/entities/user/User';
 import { postEntity } from 'src/entities/post/post';
 import * as dotenv from 'dotenv';
+import { MediaEntity } from 'src/entities/media/media.entity';
+import { LikeEntity } from 'src/entities/likes/likes.entity';
+import { CommentEntity } from 'src/entities/comments/comments.entity';
 dotenv.config();
 
 const rawDataSourceOptions = {
@@ -11,11 +14,11 @@ const rawDataSourceOptions = {
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-    synchronize: false,
+    synchronize: true,
     logging: true,
     migrationsTableName: 'typeorm_migrations',
     migrationsRun: false,
-    entities: [User, postEntity],
+    entities: [User, postEntity,MediaEntity,LikeEntity,CommentEntity],
 };
 
 export const dataSourceOptions = rawDataSourceOptions as DataSourceOptions;
