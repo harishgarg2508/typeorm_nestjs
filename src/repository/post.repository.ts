@@ -1,18 +1,24 @@
+import { PostDTO } from 'src/post/dto/post.dto';
 import { DataSource, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PostType } from 'src/post/types/post.types';
 import { postEntity } from 'src/entities/post/post';
 import { PaginationDTO } from 'src/post/dto/pagination.dto';
 import { DEFAULT_PAGE_LIMIT } from 'src/utils/constants';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class PostRepository extends Repository<postEntity> {
-    constructor(private datasource: DataSource) {
+    constructor(private datasource: DataSource,private readonly userRepository: UserRepository,) {
         super(postEntity, datasource.createEntityManager());
     }
 
-    async createPost(postData: PostType): Promise<postEntity> {
-        const post = this.create(postData);
+    async createPost(postData: PostDTO): Promise<postEntity> {
+        const { userId, ...restOfPostData } = postData;
+        const user = await this.userRepository.findOneBy({ id: userId });
+        if (!user) {
+            throw new NotFoundException(`User  not found`);
+        }
+        const post = this.create({ ...restOfPostData, user });
         return this.save(post);
     }
 
@@ -28,12 +34,18 @@ export class PostRepository extends Repository<postEntity> {
         );
     }
  
-    async updatePost(postData: Partial<PostType>, id: number): Promise<postEntity> {
-        const result = await this.update(id, postData);
-        if (result.affected === 0) {
-            throw new NotFoundException(`Post with ID ${id} not found.`);
+    async updatePost(postData: Partial<PostDTO>, id: number): Promise<postEntity> {
+        const postToUpdate = await this.findOnePost(id);
+
+        const { userId, ...rest } = postData;
+        Object.assign(postToUpdate, rest);
+
+        if (userId) {
+            const user = await this.userRepository.findOneBy({ id: userId });
+            if (!user) throw new NotFoundException(`User with ID not found`);
+            postToUpdate.user = user;
         }
-        return this.findOnePost(id);
+        return this.save(postToUpdate);
     }
 
     async deletePost(id: number): Promise<postEntity> {
@@ -46,7 +58,7 @@ export class PostRepository extends Repository<postEntity> {
     }
 
     async findOnePost(id: number): Promise<postEntity> {
-        const post = await this.findOne({ where: { id } });
+        const post = await this.findOne({ where: { id }, relations: { user: true } });
         if (!post) {
             throw new NotFoundException('post not found');
         }
