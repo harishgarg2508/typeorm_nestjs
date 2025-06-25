@@ -1,10 +1,11 @@
 import { PostDTO } from 'src/post/dto/post.dto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository, Like } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { postEntity } from 'src/entities/post/post';
 import { PaginationDTO } from 'src/post/dto/pagination.dto';
 import { DEFAULT_PAGE_LIMIT } from 'src/utils/constants';
 import { UserRepository } from './user.repository';
+import { FilterDTO } from 'src/post/dto/filters.dto';
 
 @Injectable()
 export class PostRepository extends Repository<postEntity> {
@@ -30,6 +31,7 @@ export class PostRepository extends Repository<postEntity> {
                 relations:{
                     user:true
                 },
+
             },
         );
     }
@@ -63,5 +65,24 @@ export class PostRepository extends Repository<postEntity> {
             throw new NotFoundException('post not found');
         }
         return post;
+    }
+
+    async filters(filterDTO: FilterDTO): Promise<postEntity[]> {
+        const { title, content } = filterDTO;
+        const conditions: FindOptionsWhere<postEntity> = {
+            ...(title ? { title: Like(`%${title}%`) } : {}),
+            ...(content ? { content: Like(`%${content}%`) } : {})
+        };
+
+        return this.find({ 
+            where:conditions ,
+            relations: { user: true },
+            select: {
+                content:true,
+                user:{
+                    name:true
+                }
+            }
+        });
     }
 }

@@ -12,9 +12,7 @@ export class postEntity{
     @Column()
     content:string;
 
-    @Column()
-    author:string;
-
+ 
     @ManyToOne(()=>User,user=>user.posts)
     user:User
 }

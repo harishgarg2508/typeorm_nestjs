@@ -5,6 +5,7 @@ import { postEntity } from "src/entities/post/post";
 import { PostDTO } from "./dto/post.dto";
 import { UserRepository } from "src/repository/user.repository";
 import { PaginationDTO } from "./dto/pagination.dto";
+import { FilterDTO } from "./dto/filters.dto";
 
 @Injectable()
 export class PostService{
@@ -32,5 +33,10 @@ export class PostService{
 
     async findOne(id:number):Promise<postEntity>{
         return this.postRepository.findOnePost(id);
+    }
+
+
+    async filters(filterDTO: FilterDTO) {
+        return this.postRepository.filters(filterDTO);
     }
 }

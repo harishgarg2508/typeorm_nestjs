@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestj
 import { PostService } from "./post.service";
 import { PostDTO } from "./dto/post.dto";
 import { PaginationDTO } from "./dto/pagination.dto";
+import { FilterDTO } from "./dto/filters.dto";
 
 @Controller('post')
 export class PostController{
@@ -14,6 +15,11 @@ export class PostController{
     @Get()
     async findAll(@Query() paginationDTO:PaginationDTO){
         return await this.postService.findAll(paginationDTO)
+    }
+
+    @Get('filters')
+    async filters(@Query() filterDTO: FilterDTO) {
+        return this.postService.filters(filterDTO);
     }
 
     @Patch(':id')

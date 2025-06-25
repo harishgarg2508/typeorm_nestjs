@@ -11,10 +11,6 @@ export class PostDTO{
     @IsNotEmpty()
     content:string;
 
-    @IsString()
-    @IsNotEmpty()
-    author:string;
-
     @IsNumber()
     @IsNotEmpty()
     userId:number

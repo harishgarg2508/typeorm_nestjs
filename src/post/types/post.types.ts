@@ -4,8 +4,6 @@ export type PostType = {
 
     content:string;
 
-    author:string;
-    
     userId:number
 
 }
