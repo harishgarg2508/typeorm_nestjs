@@ -1,8 +1,8 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../user/User";
-import { MediaEntity } from "../media/media.entity";
-import { LikeEntity } from "../likes/likes.entity";
-import { CommentEntity } from "../comments/comments.entity";
+import { User } from "../../User/entities/User.entity";
+import { MediaEntity } from "../../media/entities/media.entity";
+import { LikeEntity } from "../../likes/entities/likes.entity";
+import { CommentEntity } from "../../comments/entities/comments.entity";
 
 @Entity('posts')
 export class postEntity{

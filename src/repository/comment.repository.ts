@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCommentDto } from "src/comments/dto/create-comment.dto";
-import { CommentEntity } from "src/entities/comments/comments.entity";
+import { CommentEntity } from "src/comments/entities/comments.entity";
 import { DataSource } from "typeorm";
 
 import { Repository } from "typeorm";

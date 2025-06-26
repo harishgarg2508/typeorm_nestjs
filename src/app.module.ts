@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user/User';
+import { User } from './User/entities/User.entity';
 import { UserModule } from './User/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostModule } from './post/post.module';
-import { postEntity } from './entities/post/post';
+import { postEntity } from './post/entities/post.entity';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { MediaModule } from './media/media.module';
-import { MediaEntity } from './entities/media/media.entity';
-import { CommentEntity } from './entities/comments/comments.entity';
-import { LikeEntity } from './entities/likes/likes.entity';
+import { MediaEntity } from './media/entities/media.entity';
+import { CommentEntity } from './comments/entities/comments.entity';
+import { LikeEntity } from './likes/entities/likes.entity';
 
 @Module({
   imports: [

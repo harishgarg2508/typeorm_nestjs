@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { LikeEntity } from "src/entities/likes/likes.entity";
+import { LikeEntity } from "src/likes/entities/likes.entity";
 import { CreateLikeDto } from "src/likes/dto/create-like.dto";
 import { DataSource } from "typeorm";
 

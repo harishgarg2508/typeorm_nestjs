@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PostType } from "./types/post.types";
 import { PostRepository } from "src/repository/post.repository";
-import { postEntity } from "src/entities/post/post";
+import { postEntity } from "src/post/entities/post.entity";
 import { PostDTO } from "./dto/post.dto";
 import { UserRepository } from "src/repository/user.repository";
 import { PaginationDTO } from "./dto/pagination.dto";

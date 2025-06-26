@@ -3,7 +3,7 @@ import { LikesService } from './likes.service';
 import { LikesController } from './likes.controller';
 import { LikesRepository} from 'src/repository/likes.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LikeEntity } from 'src/entities/likes/likes.entity';
+import { LikeEntity } from 'src/likes/entities/likes.entity';
 import { UserRepository } from 'src/repository/user.repository';
 import { PostRepository } from 'src/repository/post.repository';
 

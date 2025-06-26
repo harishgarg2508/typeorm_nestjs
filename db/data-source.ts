@@ -1,10 +1,10 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { User } from 'src/entities/user/User';
-import { postEntity } from 'src/entities/post/post';
+import { User } from 'src/User/entities/User.entity';
+import { postEntity } from 'src/post/entities/post.entity';
 import * as dotenv from 'dotenv';
-import { MediaEntity } from 'src/entities/media/media.entity';
-import { LikeEntity } from 'src/entities/likes/likes.entity';
-import { CommentEntity } from 'src/entities/comments/comments.entity';
+import { MediaEntity } from 'src/media/entities/media.entity';
+import { LikeEntity } from 'src/likes/entities/likes.entity';
+import { CommentEntity } from 'src/comments/entities/comments.entity';
 dotenv.config();
 
 const rawDataSourceOptions = {

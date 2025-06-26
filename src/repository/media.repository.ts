@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { MediaEntity } from "src/entities/media/media.entity";
+import { MediaEntity } from "src/media/entities/media.entity";
 import { CreateMediaDto } from "src/media/dto/create-media.dto";
 import { DataSource, Repository } from "typeorm";
 import { UserRepository } from "./user.repository";

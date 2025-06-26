@@ -1,7 +1,7 @@
 import { PostDTO } from 'src/post/dto/post.dto';
 import { DataSource, FindOptionsWhere, Repository, Like } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { postEntity } from 'src/entities/post/post';
+import { postEntity } from 'src/post/entities/post.entity';
 import { PaginationDTO } from 'src/post/dto/pagination.dto';
 import { DEFAULT_PAGE_LIMIT } from 'src/utils/constants';
 import { UserRepository } from './user.repository';

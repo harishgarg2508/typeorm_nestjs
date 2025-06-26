@@ -1,5 +1,5 @@
 import { DataSource, Repository } from 'typeorm';
-import { User } from 'src/entities/user/User';
+import { User } from 'src/User/entities/User.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { userType } from 'src/User/types/user.types';
 
