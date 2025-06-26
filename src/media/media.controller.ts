@@ -8,7 +8,6 @@ export class MediaController {
 
   @Post()
     create(@Body() createMediaDto: CreateMediaDto) {
-    console.log(createMediaDto)
     return  this.mediaService.create(createMediaDto);
   }
 

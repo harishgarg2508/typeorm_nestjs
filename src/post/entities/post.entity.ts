@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../User/entities/User.entity";
 import { MediaEntity } from "../../media/entities/media.entity";
 import { LikeEntity } from "../../likes/entities/likes.entity";
@@ -17,24 +17,24 @@ export class postEntity{
 
     @Column({default:'public'})
     type:string;
-
-
-    @ManyToOne(()=>User,user=>user.posts)
-    user:User
-
-
+    
     @CreateDateColumn()
     createdAt:Date
+    
+    @DeleteDateColumn()
+    deletedAt:Date
+    
+    @ManyToOne(()=>User,user=>user.posts, { onDelete: 'CASCADE' })
+    user:User
 
-
-    @OneToMany(()=>LikeEntity,like=>like.post)
+    @OneToMany(()=>LikeEntity,like=>like.post,{ onDelete: 'CASCADE' })
     likes:LikeEntity[]
 
 
-    @OneToMany(()=>CommentEntity,comment=>comment.post)
-    comments:LikeEntity[]
+    @OneToMany(()=>CommentEntity,comment=>comment.post,{ onDelete: 'CASCADE' })
+    comments:CommentEntity[]
 
-    @OneToMany(()=>MediaEntity,media=>media.post)
+    @OneToMany(()=>MediaEntity,media=>media.post,{ onDelete: 'CASCADE' })
     media:MediaEntity[]
 
 
@@ -44,5 +44,3 @@ export class postEntity{
 
 
 }
-
-

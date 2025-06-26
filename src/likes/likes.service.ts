@@ -11,15 +11,15 @@ export class LikesService {
   }
 
   findAll() {
-    return `This action returns all likes`;
+    return this.likeRepository.getLikes();
   }
 
   findOne(id: number) {
     return `This action returns a #${id} like`;
   }
 
-  update(id: number, updateLikeDto: CreateLikeDto) {
-    return `This action updates a #${id} like`;
+  update(id: number) {
+    return this.likeRepository.updateLike(id);
   }
 
   remove(id: number) {

@@ -13,5 +13,9 @@ export class UserDTO{
     @IsString()
     email:string;
 
+    @IsString()
+    @IsNotEmpty()
+    gender:string;
+
 
 }

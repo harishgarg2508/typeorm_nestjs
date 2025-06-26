@@ -12,7 +12,7 @@ export class CommentsService {
   }
 
   findAll() {
-    return `This action returns all comments`;
+    return this.commentRepository.getComments()
   }
 
   findOne(id: number) {

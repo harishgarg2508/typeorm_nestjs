@@ -8,12 +8,11 @@ export class MediaService {
   constructor(private readonly mediaRepository: MediaRepository) {}
 
   async create(createMediaDto: CreateMediaDto) {
-    console.log(createMediaDto)
     return await this.mediaRepository.createMedia(createMediaDto);
   }
 
   findAll() {
-    return `This action returns all media`;
+    return this.mediaRepository.getMedia();
   }
 
   findOne(id: number) {

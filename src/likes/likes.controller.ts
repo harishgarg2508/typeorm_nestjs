@@ -22,8 +22,8 @@ export class LikesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLikeDto: CreateLikeDto) {
-    return this.likesService.update(+id, updateLikeDto);
+  update(@Param('id') id: string) {
+    return this.likesService.update(+id);
   }
 
   @Delete(':id')

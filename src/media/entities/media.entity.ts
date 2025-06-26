@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn } from "typeorm";
 import { postEntity } from "../../post/entities/post.entity";
 import { User } from "../../User/entities/User.entity";
 
@@ -19,11 +19,14 @@ export class MediaEntity {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => postEntity, post => post.media)
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    @ManyToOne(() => postEntity, post => post.media,{ onDelete: 'CASCADE' })
     post: postEntity;
 
 
-    @ManyToOne(() => User, user => user.media)
+    @ManyToOne(() => User, user => user.media,{ onDelete: 'CASCADE' })
     user: User;
     
 }

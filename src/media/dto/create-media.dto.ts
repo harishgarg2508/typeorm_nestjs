@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsInt, IsString } from "class-validator";
 
 export class CreateMediaDto {
     @IsString()
@@ -8,8 +8,9 @@ export class CreateMediaDto {
     // e.g., image, video, document
     @IsString()
     fileName?: string;
-
+    @IsInt()
     postId: number;
+    @IsInt()
     userId: number;
 
 

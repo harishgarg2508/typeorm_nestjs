@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/User/entities/User.entity";
 import { userType } from "./types/user.types";
 import { UserRepository } from "src/repository/user.repository";
+import { DataSource } from "typeorm";
 
 @Injectable()
 export class UserService{
@@ -23,7 +24,11 @@ export class UserService{
     }
 
     async delete(id:number):Promise<User>{
-        return this.userRepository.deleteUser(id);
+        const user = await this.userRepository.deleteUser(id);
+        if (!user) {
+            throw new Error(`User with id ${id} not found`);
+        }
+        return user;
     }
 
     async findOne(id:number):Promise<User>{

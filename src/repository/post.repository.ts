@@ -5,37 +5,58 @@ import { postEntity } from 'src/post/entities/post.entity';
 import { PaginationDTO } from 'src/post/dto/pagination.dto';
 import { DEFAULT_PAGE_LIMIT } from 'src/utils/constants';
 import { UserRepository } from './user.repository';
+import { User } from 'src/User/entities/User.entity';
 import { FilterDTO } from 'src/post/dto/filters.dto';
 
 @Injectable()
 export class PostRepository extends Repository<postEntity> {
-    constructor(private datasource: DataSource,private readonly userRepository: UserRepository,) {
-        super(postEntity, datasource.createEntityManager());
+    constructor(private dataSource: DataSource, private readonly userRepository: UserRepository,) {
+        super(postEntity, dataSource.createEntityManager());
     }
 
     async createPost(postData: PostDTO): Promise<postEntity> {
-        const { userId, ...restOfPostData } = postData;
-        const user = await this.userRepository.findOneBy({ id: userId });
-        if (!user) {
-            throw new NotFoundException(`User  not found`);
+
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+
+            const { userId, ...restOfPostData } = postData;
+            const user = await queryRunner.manager.findOneBy(User, { id: userId });
+            if (!user) {
+                throw new NotFoundException(`User  not found`);
+            }
+            const post = queryRunner.manager.create(postEntity, { ...restOfPostData, user });
+            const SavedPost = await queryRunner.manager.save(post);
+            await queryRunner.commitTransaction();
+            return SavedPost
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+
+        } finally {
+            await queryRunner.release();
         }
-        const post = this.create({ ...restOfPostData, user });
-        return this.save(post);
     }
 
-    async findAll(paginationDTO:PaginationDTO): Promise<postEntity[]> {
+    async findAll(paginationDTO: PaginationDTO): Promise<postEntity[]> {
         return this.find(
             {
-                skip:paginationDTO.skip,
-                take:paginationDTO.limit ?? DEFAULT_PAGE_LIMIT,
-                relations:{
-                    user:true
+                skip: paginationDTO.skip,
+                take: paginationDTO.limit ?? DEFAULT_PAGE_LIMIT,
+                relations: {
+                    user: true,
+                    comments: true,
+                    media: true,
+                    likes: true
+
                 },
 
             },
         );
     }
- 
+
     async updatePost(postData: Partial<PostDTO>, id: number): Promise<postEntity> {
         const postToUpdate = await this.findOnePost(id);
 
@@ -51,38 +72,68 @@ export class PostRepository extends Repository<postEntity> {
     }
 
     async deletePost(id: number): Promise<postEntity> {
-        const post = await this.findOne({ where: { id } });
-        if (!post) {
-            throw new NotFoundException('post not found');
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction()
+        try {
+            const post = await queryRunner.manager.findOne(postEntity, {
+                where: { id },
+                relations: ["comments", "media", "likes"]
+            });
+
+            if(!post){
+                throw new NotFoundException(`Post with ID ${id} not found`);
+            }
+            await queryRunner.manager.remove([
+                ...post.comments,
+                ...post.media,
+                ...post.likes
+            ]);
+            await queryRunner.commitTransaction();
+            return post;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw new NotFoundException(`Post with ID ${id} not found`);
+
+        } finally{
+            await queryRunner.release();
         }
-        await this.delete(post);
-        return post;
+
     }
 
     async findOnePost(id: number): Promise<postEntity> {
-        const post = await this.findOne({ where: { id }, relations: { user: true } });
+  
+        const post = await this.createQueryBuilder("post")
+            .leftJoinAndSelect("post.user", "user")
+            .leftJoinAndSelect("post.comments", "comments")
+            .leftJoinAndSelect("post.media", "media")
+            .leftJoinAndSelect("post.likes", "likes")
+            .where("post.id = :id", { id })
+            .getOne();
+
         if (!post) {
-            throw new NotFoundException('post not found');
+            throw new NotFoundException(`Post with ID ${id} not found`);
         }
         return post;
     }
 
     async filters(filterDTO: FilterDTO): Promise<postEntity[]> {
         const { title, content } = filterDTO;
-        const conditions: FindOptionsWhere<postEntity> = {
-            ...(title ? { title: Like(`%${title}%`) } : {}),
-            ...(content ? { content: Like(`%${content}%`) } : {})
-        };
+     
+        const query = this.createQueryBuilder("post")
+            .leftJoinAndSelect("post.user", "user")
+            .leftJoinAndSelect("post.comments", "comments")
+            .leftJoinAndSelect("post.media", "media")
+            .leftJoinAndSelect("post.likes", "likes");
 
-        return this.find({ 
-            where:conditions ,
-            relations: { user: true },
-            select: {
-                content:true,
-                user:{
-                    name:true
-                }
-            }
-        });
+        if (title) {
+            query.andWhere("post.title LIKE :title", { title: `%${title}%` });
+        }
+
+        if (content) {
+            query.andWhere("post.content LIKE :content", { content: `%${content}%` });
+        }
+
+        return query.getMany();
     }
 }

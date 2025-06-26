@@ -15,5 +15,8 @@ export class PostDTO{
     @IsNotEmpty()
     userId:number
 
+    @IsString()
+    type:string;
+
     
 }
