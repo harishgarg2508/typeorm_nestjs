@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { postEntity } from "../../post/entities/post.entity";
 import { LikeEntity } from "../../likes/entities/likes.entity";
 import { CommentEntity } from "../../comments/entities/comments.entity";
 import { MediaEntity } from "../../media/entities/media.entity";
 import { Delete } from "@nestjs/common";
 
+@Unique(["email", "isActive"])
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn()
@@ -16,8 +17,14 @@ export class User {
     @Column()
     age: number;
 
-    @Column({unique:true})
+    @Column()
     email: string;
+
+    @Column({default:true})
+    isActive:boolean
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @Column({default:'male'})
     gender:string
@@ -28,8 +35,6 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @DeleteDateColumn()
-    deletedAt: Date;
 
     @OneToMany(() => postEntity, post => post.user)// {eager:true} if using eager : true i dont have to specify relation : true in find method in userrepository
     posts: postEntity[];

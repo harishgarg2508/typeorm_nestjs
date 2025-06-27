@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class UserDTO{
     @IsString()
@@ -17,5 +17,8 @@ export class UserDTO{
     @IsNotEmpty()
     gender:string;
 
+    @IsBoolean()
+    @IsOptional()
+    isActive:boolean;
 
 }

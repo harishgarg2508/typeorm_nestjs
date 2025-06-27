@@ -15,20 +15,20 @@ export class UserRepository extends Repository<User> {
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            const { email } = userData;
+            // const { email } = userData;
 
-            const existingUser = await queryRunner.manager.findOne(User, {
-                where: { email },
-                withDeleted: true,
-            });
+            // const existingUser = await queryRunner.manager.findOne(User, {
+            //     where: { email },
+            //     withDeleted: true,
+            // });
 
-            if (existingUser) {
-                if (!existingUser.deletedAt) {
-                    throw new ConflictException(`User with email ${email} already exists.`);
-                }
-                await queryRunner.manager.restore(User, existingUser.id);
-                return existingUser;
-            }
+            // if (existingUser) {
+            //     if (!existingUser.deletedAt) {
+            //         throw new ConflictException(`User with email ${email} already exists.`);
+            //     }
+            //     await queryRunner.manager.create(User, existingUser);
+            //     return existingUser;
+            // }
 
             const newUser = queryRunner.manager.create(User, userData);
             const savedUser = await queryRunner.manager.save(newUser);
@@ -87,12 +87,14 @@ export class UserRepository extends Repository<User> {
                 throw new NotFoundException(`User with ID ${id} not found`);
             }
             await queryRunner.manager.softRemove([
+                   user,
                 ...user.posts,
                 ...user.comments,
                 ...user.likes,
-                ...user.media
+                ...user.media,
             ]);
-
+            user.isActive = !user.isActive;
+            await queryRunner.manager.save(user);
             await queryRunner.commitTransaction();
             return user;
         } catch (error) {
